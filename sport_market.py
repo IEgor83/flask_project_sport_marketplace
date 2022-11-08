@@ -5,37 +5,37 @@ app = Flask(__name__)
 
 @app.route("/")
 def main_page():
-    return '''HELLO'''
+    return render_template("main_page.html")
 
 
 @app.route("/registration")
 def registration():
-    return '''Регистрация'''
+    return render_template("registration.html")
 
 
 @app.route("/authorization")
 def authorization():
-    return '''Авторизация'''
+    return render_template("authorization.html")
 
 
 @app.route("/basket")
 def basket():
-    return '''Корзина'''
+    return render_template("basket.html")
 
 
 @app.route("/favourites")
 def favourites():
-    return '''Избранное'''
+    return render_template("favourites.html")
 
 
 @app.route("/orders")
 def orders():
-    return '''Заказы'''
+    return render_template("orders.html")
 
 
 @app.route("/user")
 def user_page():
-    return '''Личная страница'''
+    return render_template("user_page.html")
 
 
 if __name__ == "__main__":
