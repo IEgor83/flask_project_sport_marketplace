@@ -28,5 +28,15 @@ def favourites():
     return '''Избранное'''
 
 
+@app.route("/orders")
+def orders():
+    return '''Заказы'''
+
+
+@app.route("/user")
+def user_page():
+    return '''Личная страница'''
+
+
 if __name__ == "__main__":
     app.run(debug=True)
