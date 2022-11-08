@@ -18,5 +18,15 @@ def authorization():
     return '''Авторизация'''
 
 
+@app.route("/basket")
+def basket():
+    return '''Корзина'''
+
+
+@app.route("/favourites")
+def favourites():
+    return '''Избранное'''
+
+
 if __name__ == "__main__":
     app.run(debug=True)
