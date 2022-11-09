@@ -6,5 +6,30 @@
 </head>
 <body>
 <h1>Регистрация</h1>
+<form name="registration" method="post">
+        <div class="row">
+            <label>Логин:</label>
+            <input type="text" name="login" id="login">
+            <div class="error" id="loginErr"></div>
+        </div>
+        <div class="row">
+            <label>Пароль:</label>
+            <input type="password" name="password" id="password"  minlength="6">
+            <div class="error" id="passErr"></div>
+        </div>
+        <div class="row">
+            <label>Подтверждение пароля:</label>
+            <input type="password" name="confirm" id="confirm">
+            <div class="error" id="confirmErr"></div>
+        </div>
+        <div class="row">
+            <label>phone:</label>
+            <input type="text" name="fio" id="fio">
+            <div class="error" id="fioErr"></div>
+        </div>
+        <div class="row">
+            <input type="submit" value="Отправить">
+        </div>
+    </form>
 </body>
 </html>
