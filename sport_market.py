@@ -1,6 +1,7 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, redirect
 from db_util import Database
 from werkzeug.security import generate_password_hash, check_password_hash
+from forms import CreateUserForm
 
 app = Flask(__name__)
 db = Database()
@@ -14,19 +15,20 @@ def main_page():
 
 @app.route("/registration", methods=['GET', 'POST'])
 def registration():
-    if request.method == "POST":
-        if request.form.get('password') == request.form.get('confirm'):
-            login = request.form.get('login')
-            hash_pass = str(generate_password_hash(request.form.get('password')))
-            contact = request.form.get('contacts')
-            role = 'user'
-            max_id = db.select(f"SELECT MAX(user_id) FROM users")['max']
-            if max_id is not None:
-                user_id = max_id + 1
-            else:
-                user_id = 1
-            db.insert(f"INSERT into users (user_id, role, login, password, contacts) VALUES ({user_id}, '{role}', '{login}', '{hash_pass}', '{contact}')")
-    return render_template("registration.html")
+    form = CreateUserForm()
+    if form.validate_on_submit():
+        login = request.form.get('login')
+        hash_pass = str(generate_password_hash(request.form.get('password')))
+        contact = request.form.get('contacts')
+        role = 'user'
+        max_id = db.select(f"SELECT MAX(user_id) FROM users")['max']
+        if max_id is not None:
+            user_id = max_id + 1
+        else:
+            user_id = 1
+        db.insert(f"INSERT into users (user_id, role, login, password, contacts) VALUES ({user_id}, '{role}', '{login}', '{hash_pass}', '{contact}')")
+        return redirect(url_for('main_page'))
+    return render_template("registration.html", form=form)
 
 
 @app.route("/authorization", methods=['GET', 'POST'])

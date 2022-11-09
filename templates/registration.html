@@ -6,30 +6,39 @@
 </head>
 <body>
 <h1>Регистрация</h1>
-<form name="registration" method="post">
-        <div class="row">
-            <label>Логин:</label>
-            <input type="text" name="login" id="login">
-            <div class="error" id="loginErr"></div>
-        </div>
-        <div class="row">
-            <label>Пароль:</label>
-            <input type="password" name="password" id="password"  minlength="6">
-            <div class="error" id="passErr"></div>
-        </div>
-        <div class="row">
-            <label>Подтверждение пароля:</label>
-            <input type="password" name="confirm" id="confirm">
-            <div class="error" id="confirmErr"></div>
-        </div>
-        <div class="row">
-            <label>Телефон или e-mail:</label>
-            <input type="text" name="contacts" id="contacts">
-            <div class="error" id="contactsErr"></div>
-        </div>
-        <div class="row">
-            <input type="submit" value="Отправить">
-        </div>
-    </form>
+<form name="registration" method="post" action="{{ url_for('registration') }}">
+    {{ form.csrf_token() }}
+    <div class="row">
+        {{ form.username.label }}
+        {{ form.username(class="form-control") }}
+        {% for error in form.username.errors %}
+            <h3>{{ error }}</h3>
+        {% endfor %}
+    </div>
+    <div class="row">
+        {{ form.password.label }}
+        {{ form.password(class="form-control") }}
+        {% for error in form.password.errors %}
+            <h3>{{ error }}</h3>
+        {% endfor %}
+    </div>
+    <div class="row">
+        {{ form.confirm_password.label }}
+        {{ form.confirm_password(class="form-control") }}
+        {% for error in form.confirm_password.errors %}
+            <h3>{{ error }}</h3>
+        {% endfor %}
+    </div>
+    <div class="row">
+        {{ form.contacts.label }}
+        {{ form.contacts(class="form-control") }}
+        {% for error in form.contacts.errors %}
+            <h3>{{ error }}</h3>
+        {% endfor %}
+    </div>
+    <div class="row">
+        {{ form.submit(class="btn btn-primary")}}
+    </div>
+</form>
 </body>
 </html>
