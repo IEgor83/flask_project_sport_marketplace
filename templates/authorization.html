@@ -7,9 +7,31 @@
 <body>
 <h2>Авторизация</h2>
     <form name="authorization" method="post">
-        <div class="row">
-            <label>e-mail или телефон: </label>
-            <input type="text" name="contact" id="log">
+        <script>
+            function isPhone() {
+                var contact_data = document.getElementById("contact");
+                var change_email = document.getElementById("change_on_email");
+                var change_phone = document.getElementById("change_on_phone");
+                contact_data.innerHTML = '<label>Телефон: </label>\n' +
+                '<input type="text" name="phone" id="phone">';
+                change_email.style.display = '';
+                change_phone.style.display = 'none';
+            }
+            function isEmail() {
+                var contact_data = document.getElementById("contact");
+                var change_email = document.getElementById("change_on_email");
+                var change_phone = document.getElementById("change_on_phone");
+                contact_data.innerHTML = '<label>e-mail: </label>\n' +
+                '<input type="text" name="email" id="email">';
+                change_email.style.display = 'none';
+                change_phone.style.display = '';
+            }
+        </script>
+        <span onclick="isPhone()" id="change_on_phone">Войти по номеру телефона</span>
+        <span onclick="isEmail()" id="change_on_email" style="display: none">Войти по e-mail</span>
+        <div class="row" id="contact">
+            <label>e-mail: </label>
+            <input type="text" name="email" id="email">
         </div>
         <div class="row">
             <label>Пароль: </label>

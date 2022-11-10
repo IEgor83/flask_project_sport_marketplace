@@ -47,14 +47,16 @@ def authorization():
         password = request.form.get('password')
         if email:
             user_pas = db.select(f"SELECT password FROM users WHERE email='{email}'")
+            error = 'Неверный e-mail'
         elif phone:
             user_pas = db.select(f"SELECT password FROM users WHERE phone='{phone}'")
+            error = 'Неверный номер телефона'
         else:
             user_pas = None
+            error = 'Заполните поля'
         if user_pas:
             if check_password_hash(user_pas['password'], str(password)):
                 return redirect(url_for('main_page'))
-        error = 'Неверный логин или пароль'
     return render_template("authorization.html", error=error)
 
 
