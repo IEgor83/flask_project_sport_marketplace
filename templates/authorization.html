@@ -8,15 +8,14 @@
 <h2>Авторизация</h2>
     <form name="authorization" method="post">
         <div class="row">
-            <label>Логин:</label>
-            <input type="text" name="login" id="log">
-            <div class="error" id="loginErr"></div>
+            <label>e-mail или телефон: </label>
+            <input type="text" name="contact" id="log">
         </div>
         <div class="row">
-            <label>Пароль:</label>
+            <label>Пароль: </label>
             <input type="password" name="password" id="pass" minlength="6">
-            <div class="error" id="passwordErr"></div>
         </div>
+        <div class="error" id="passwordErr">{{ error }}</div>
         <input type="submit" value="Отправить">
     </form>
 </body>

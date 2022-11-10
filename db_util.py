@@ -26,10 +26,10 @@ class Database:
         self.con.commit()
 
     def prepare_data(self, data):
-        films = []
+        mas = []
         if len(data):
             column_names = [desc[0] for desc in self.cur.description]
             for row in data:
-                films += [{c_name: row[key] for key, c_name in enumerate(column_names)}]
+                mas += [{c_name: row[key] for key, c_name in enumerate(column_names)}]
 
-        return films
+        return mas

@@ -8,10 +8,38 @@
 <h1>Регистрация</h1>
 <form name="registration" method="post" action="{{ url_for('registration') }}">
     {{ form.csrf_token() }}
-    <div class="row">
-        {{ form.username.label }}
-        {{ form.username(class="form-control") }}
-        {% for error in form.username.errors %}
+    <script>
+        function isPhone() {
+            var contact_data = document.getElementById("contact");
+            var change_email = document.getElementById("change_on_email");
+            var change_phone = document.getElementById("change_on_phone");
+            contact_data.innerHTML = '{{ form.phone.label }}\n' +
+                 '       {{ form.phone(class="form-control") }}\n' +
+                '        {% for error in form.phone.errors %}\n' +
+                '            <h3>{{ error }}</h3>\n' +
+                '        {% endfor %}';
+            change_email.style.display = '';
+            change_phone.style.display = 'none';
+        }
+        function isEmail() {
+            var contact_data = document.getElementById("contact");
+            var change_email = document.getElementById("change_on_email");
+            var change_phone = document.getElementById("change_on_phone");
+            contact_data.innerHTML = '{{ form.email.label }}\n' +
+                 '       {{ form.email(class="form-control") }}\n' +
+                '        {% for error in form.email.errors %}\n' +
+                '            <h3>{{ error }}</h3>\n' +
+                '        {% endfor %}';
+            change_email.style.display = 'none';
+            change_phone.style.display = '';
+        }
+    </script>
+    <span onclick="isPhone()" id="change_on_phone">Регистрация по номеру телефона</span>
+    <span onclick="isEmail()" id="change_on_email" style="display: none">Регистрация по e-mail</span>
+    <div class="row" id="contact">
+        {{ form.email.label }}
+        {{ form.email(class="form-control") }}
+        {% for error in form.email.errors %}
             <h3>{{ error }}</h3>
         {% endfor %}
     </div>
@@ -29,16 +57,11 @@
             <h3>{{ error }}</h3>
         {% endfor %}
     </div>
-    <div class="row">
-        {{ form.contacts.label }}
-        {{ form.contacts(class="form-control") }}
-        {% for error in form.contacts.errors %}
-            <h3>{{ error }}</h3>
-        {% endfor %}
-    </div>
+    {{ error_mes }}
     <div class="row">
         {{ form.submit(class="btn btn-primary")}}
     </div>
+    <h3 onclick="location.href = '{{ url_for("main_page") }}'">Назад</h3>
 </form>
 </body>
 </html>

@@ -15,25 +15,47 @@ def main_page():
 
 @app.route("/registration", methods=['GET', 'POST'])
 def registration():
+    error_mes = ''
     form = CreateUserForm()
     if form.validate_on_submit():
-        login = request.form.get('login')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        if email and db.select(f"SELECT COUNT(*) FROM users WHERE email='{email}'")['count'] > 0:
+            error_mes = 'Пользователь с таким e-mail уже существует'
+            return render_template("registration.html", form=form, error_mes=error_mes)
+        if phone and db.select(f"SELECT COUNT(*) FROM users WHERE phone ='{phone}'")['count'] > 0:
+            error_mes = 'Пользователь с таким телефоном уже существует'
+            return render_template("registration.html", form=form, error_mes=error_mes)
         hash_pass = str(generate_password_hash(request.form.get('password')))
-        contact = request.form.get('contacts')
         role = 'user'
         max_id = db.select(f"SELECT MAX(user_id) FROM users")['max']
         if max_id is not None:
             user_id = max_id + 1
         else:
             user_id = 1
-        db.insert(f"INSERT into users (user_id, role, login, password, contacts) VALUES ({user_id}, '{role}', '{login}', '{hash_pass}', '{contact}')")
+        db.insert(f"INSERT into users (user_id, role, email, phone, password, ) VALUES ({user_id}, '{role}', '{email}', '{phone}', '{hash_pass}')")
         return redirect(url_for('main_page'))
-    return render_template("registration.html", form=form)
+    return render_template("registration.html", form=form, error_mes=error_mes)
 
 
 @app.route("/authorization", methods=['GET', 'POST'])
 def authorization():
-    return render_template("authorization.html")
+    error = ''
+    if request.method == 'POST':
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        password = request.form.get('password')
+        if email:
+            user_pas = db.select(f"SELECT password FROM users WHERE email='{email}'")
+        elif phone:
+            user_pas = db.select(f"SELECT password FROM users WHERE phone='{phone}'")
+        else:
+            user_pas = None
+        if user_pas:
+            if check_password_hash(user_pas['password'], str(password)):
+                return redirect(url_for('main_page'))
+        error = 'Неверный логин или пароль'
+    return render_template("authorization.html", error=error)
 
 
 @app.route("/basket")

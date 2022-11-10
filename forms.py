@@ -4,11 +4,14 @@ from wtforms.validators import ValidationError, InputRequired, EqualTo, Length, 
 
 
 class CreateUserForm(FlaskForm):
-    username = StringField(label=('Логин: '),
+    email = StringField(label=('e-mail: '),
         validators=[InputRequired(message='Заполните это поле'),
-        Length(min=6, max=16, message='Логин должен содержать от %(min)d до %(max)d символов'),
-        Regexp(regex="^[a-zA-Z0-9]+$",
-            message='Только латинские буквы и цифры')])
+        Regexp(regex="/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i",
+            message='Введите корректный e-mail')])
+    phone = StringField(label=('Телефон: '),
+        validators=[InputRequired(message='Заполните это поле'),
+        Regexp(regex="^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$",
+            message='Введите корректный номер телефона')])
     password = PasswordField(label=('Пароль: '),
         validators=[InputRequired(message='Заполните это поле'),
         Length(min=8, message='Пароль должен содержать минимум %(min)d символов')])
@@ -16,8 +19,4 @@ class CreateUserForm(FlaskForm):
         label=('Подтверждение пароля: '),
         validators=[InputRequired(message='Заполните это поле'),
         EqualTo('password', message='Пароли должны совпадать')])
-    contacts = StringField(label=('Телефон или e-mail: '),
-        validators=[InputRequired(message='Заполните это поле'),
-            Regexp(regex="\+[0-9]{1,4}[0-9]{1,10}|(.*)@(.*)\.[a-z]{2,5}",
-                message='Введите корректный e-mail или телефон')])
     submit = SubmitField(label=('Отправить'))
