@@ -28,7 +28,7 @@ class Length:
     def __call__(self, form, field):
         min_str = self.min
         max_str = self.max
-        length = len(field.data)
+        length = len(field.data) if field.data else 0
         if max_str is None:
             message = f"Длина поля должна иметь хотя бы {min_str} символов"
             if length >= min_str:
@@ -57,6 +57,11 @@ class CreateUserForm(FlaskForm):
         validators=[Required(message='Заполните это поле'),
         Regexp(regex="^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$",
             message='Введите корректный номер телефона')])
+    name = StringField(label=('Имя пользователя: '),
+        validators=[Required(message='Заполните это поле'),
+        Length(min=1, message='Имя пользователя должно содержать минимум %(min)d символ'),
+        Regexp(regex="^[а-яА-ЯёЁa-zA-Z0-9]+$",
+            message='Допускается латиница, кириллица и цифры')])
     password = PasswordField(label=('Пароль: '),
         validators=[Required(message='Заполните это поле'),
         Length(min=6, message='Пароль должен содержать минимум %(min)d символов')])

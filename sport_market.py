@@ -31,7 +31,7 @@ def registration():
         return redirect(url_for('user_page'))
     error_mes = ''
     form = CreateUserForm()
-    if UserFormEmail().validate_on_submit() or UserFormPhone().validate_on_submit():
+    if form.validate_on_submit() or UserFormEmail().validate_on_submit() or UserFormPhone().validate_on_submit():
         email = request.form.get('email')
         phone = request.form.get('phone')
         if email and db.select(f"SELECT COUNT(*) FROM users WHERE email='{email}'")['count'] > 0:
@@ -40,6 +40,7 @@ def registration():
         if phone and db.select(f"SELECT COUNT(*) FROM users WHERE phone ='{phone}'")['count'] > 0:
             error_mes = 'Пользователь с таким телефоном уже существует'
             return render_template("registration.html", form=form, error_mes=error_mes)
+        name = request.form.get('name')
         hash_pass = str(generate_password_hash(request.form.get('password')))
         role = 'user'
         max_id = db.select(f"SELECT MAX(user_id) FROM users")['max']
@@ -47,7 +48,8 @@ def registration():
             user_id = max_id + 1
         else:
             user_id = 1
-        db.insert(f"INSERT into users (user_id, role, email, phone, password) VALUES ({user_id}, '{role}', '{email}', '{phone}', '{hash_pass}')")
+        db.insert(f"INSERT into users (user_id, role, email, phone, name, password)"
+                    f"VALUES ({user_id}, '{role}', '{email}', '{phone}', '{name}', '{hash_pass}')")
         if email:
             user = db.get_user_by_email(email)
         else:

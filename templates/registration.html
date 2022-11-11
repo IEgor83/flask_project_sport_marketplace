@@ -44,6 +44,13 @@
         {% endfor %}
     </div>
     <div class="row">
+        {{ form.name.label }}
+        {{ form.name(class="form-control") }}
+        {% for error in form.name.errors %}
+            <h3>{{ error }}</h3>
+        {% endfor %}
+    </div>
+    <div class="row">
         {{ form.password.label }}
         {{ form.password(class="form-control") }}
         {% for error in form.password.errors %}
