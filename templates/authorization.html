@@ -5,7 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-<h2>Авторизация</h2>
+    <h2>Авторизация</h2>
+    {% for cat, msg in get_flashed_messages(True) %}
+    <div class="flash {{ cat }}">{{ msg }}</div>
+    {% endfor %}
     <form name="authorization" method="post">
         <script>
             function isPhone() {

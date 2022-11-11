@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, flash
 from db_util import Database
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import CreateUserForm, UserFormEmail, UserFormPhone
@@ -27,6 +27,8 @@ def main_page():
 
 @app.route("/registration", methods=['GET', 'POST'])
 def registration():
+    if current_user.is_authenticated:
+        return redirect(url_for('user_page'))
     error_mes = ''
     form = CreateUserForm()
     if UserFormEmail().validate_on_submit() or UserFormPhone().validate_on_submit():
@@ -105,11 +107,13 @@ def favourites():
 
 
 @app.route("/orders")
+@login_required
 def orders():
     return render_template("orders.html")
 
 
 @app.route("/user")
+@login_required
 def user_page():
     return render_template("user_page.html")
 
