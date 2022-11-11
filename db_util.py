@@ -33,3 +33,21 @@ class Database:
                 mas += [{c_name: row[key] for key, c_name in enumerate(column_names)}]
 
         return mas
+
+    def get_user_by_id(self, user_id):
+        res = self.select(f"SELECT * FROM users WHERE user_id = {user_id} LIMIT 1")
+        if not res:
+            return False
+        return res
+
+    def get_user_by_email(self, email):
+        res = self.select(f"SELECT * FROM users WHERE email = '{email}' LIMIT 1")
+        if not res:
+            return False
+        return res
+
+    def get_user_by_phone(self, phone):
+        res = self.select(f"SELECT * FROM users WHERE phone = '{phone}' LIMIT 1")
+        if not res:
+            return False
+        return res
