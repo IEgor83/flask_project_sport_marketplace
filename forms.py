@@ -73,3 +73,4 @@ class UserFormEmail(CreateUserForm):
 
 class UserFormPhone(CreateUserForm):
     email = None
+

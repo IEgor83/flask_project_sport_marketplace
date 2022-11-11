@@ -6,6 +6,30 @@
 </head>
 <body>
 <h1>SportZone</h1>
+{% if current_user.is_authenticated %}
+    <div class="hat">
+        <a href="{{ url_for('user_page') }}" class="hat_urls">Перейти на личную страницу</a>
+    </div>
+    <div class="hat hat_1">
+        <a href="{{ url_for('basket') }}" class="hat_urls">Корзина</a>
+    </div>
+    <div class="hat hat_2">
+        <a href="{{ url_for('favourites') }}" class="hat_urls">Избранное</a>
+    </div>
+    <hr><br>
+    <b class="hello">Добро пожаловать, {{ current_user.get_user()['user_id'] }}!</b><br><br>
+    {% else %}
+        <div class="hat">
+            <a href="{{ url_for('registration') }}" class="hat_urls">Регистрация</a>
+        </div>
+        <div class="hat hat_1">
+            <a href="{{ url_for('authorization') }}" class="hat_urls">Авторизация</a>
+        </div>
+        <div class="hat hat_1">
+            <a href="{{ url_for('basket') }}" class="hat_urls">Корзина</a>
+        </div>
+        <hr><br>
+    {% endif %}
 <h3 onclick="location.href = '{{ url_for("registration") }}'">Регистрация</h3>
 <h3 onclick="location.href = '{{ url_for("authorization") }}'">Авторизация</h3>
 <h3 onclick="location.href = '{{ url_for("user_page") }}'">Личная страница</h3>
