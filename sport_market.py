@@ -32,7 +32,7 @@ def registration():
     error_mes = ''
     form = CreateUserForm()
     if form.validate_on_submit() or UserFormEmail().validate_on_submit() or UserFormPhone().validate_on_submit():
-        email = request.form.get('email')
+        email = request.form.get('emaфil')
         phone = request.form.get('phone')
         if email and db.select(f"SELECT COUNT(*) FROM users WHERE email='{email}'")['count'] > 0:
             error_mes = 'Пользователь с таким e-mail уже существует'
@@ -64,7 +64,7 @@ def registration():
 def authorization():
     if current_user.is_authenticated:
         return redirect(url_for('user_page'))
-    error = ''
+    error = email = phone = ''
     if request.method == 'POST':
         email = request.form.get('email')
         phone = request.form.get('phone')
@@ -72,11 +72,13 @@ def authorization():
         if email:
             user_pas = db.select(f"SELECT password FROM users WHERE email='{email}'")
             user = db.get_user_by_email(email)
-            error = 'Неверный e-mail'
+            error = 'Неверный e-mail или пароль'
+            phone = ''
         elif phone:
             user_pas = db.select(f"SELECT password FROM users WHERE phone='{phone}'")
             user = db.get_user_by_phone(phone)
-            error = 'Неверный номер телефона'
+            error = 'Неверный номер телефона или пароль'
+            email = ''
         else:
             user_pas = None
             user = None
@@ -87,7 +89,7 @@ def authorization():
                 rm = True if request.form.get('remainme') else False
                 login_user(userlogin, remember=rm)
                 return redirect(request.args.get("next") or url_for('main_page'))
-    return render_template("authorization.html", error=error)
+    return render_template("authorization.html", error=error, email=email, phone=phone)
 
 
 @app.route("/logout")
