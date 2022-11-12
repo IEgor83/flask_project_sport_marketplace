@@ -1,7 +1,8 @@
 from flask import Flask, render_template, url_for, request, redirect, flash
 from db_util import Database
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import CreateUserForm, UserFormEmail, UserFormPhone
+from forms import CreateUserForm, UserFormEmail, UserFormPhone,\
+    CheckAuthorization, CheckAuthorizationEmail, CheckAuthorizationPhone
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from user_login import UserLogin
 
@@ -64,32 +65,24 @@ def registration():
 def authorization():
     if current_user.is_authenticated:
         return redirect(url_for('user_page'))
-    error = email = phone = ''
-    if request.method == 'POST':
+    form = CheckAuthorization()
+    if form.validate_on_submit() or CheckAuthorizationPhone().validate_on_submit() or CheckAuthorizationEmail().validate_on_submit():
+        with open('test.txt', 'w') as f:
+            f.write(str('123456'))
         email = request.form.get('email')
         phone = request.form.get('phone')
-        password = request.form.get('password')
         if email:
-            user_pas = db.select(f"SELECT password FROM users WHERE email='{email}'")
             user = db.get_user_by_email(email)
-            error = 'Неверный e-mail или пароль'
-            phone = ''
         elif phone:
-            user_pas = db.select(f"SELECT password FROM users WHERE phone='{phone}'")
             user = db.get_user_by_phone(phone)
-            error = 'Неверный номер телефона или пароль'
-            email = ''
         else:
-            user_pas = None
             user = None
-            error = 'Заполните поля'
-        if user_pas:
-            if check_password_hash(user_pas['password'], str(password)):
-                userlogin = UserLogin().create(user)
-                rm = True if request.form.get('remainme') else False
-                login_user(userlogin, remember=rm)
-                return redirect(request.args.get("next") or url_for('main_page'))
-    return render_template("authorization.html", error=error, email=email, phone=phone)
+        if user:
+            userlogin = UserLogin().create(user)
+            rm = True if request.form.get('remainme') else False
+            login_user(userlogin, remember=rm)
+            return redirect(request.args.get("next") or url_for('main_page'))
+    return render_template("authorization.html", form=form)
 
 
 @app.route("/logout")

@@ -10,13 +10,17 @@
     <div class="flash {{ cat }}">{{ msg }}</div>
     {% endfor %}
     <form name="authorization" method="post">
+        {{ form.csrf_token() }}
         <script>
             function isPhone() {
                 var contact_data = document.getElementById("contact");
                 var change_email = document.getElementById("change_on_email");
                 var change_phone = document.getElementById("change_on_phone");
-                contact_data.innerHTML = '<label>Телефон: </label>\n' +
-                '<input type="text" name="phone" id="phone" value="{{ phone }}">';
+                contact_data.innerHTML = '{{ form.phone.label }}\n' +
+                 '       {{ form.phone(class="form-control") }}\n' +
+                '        {% for error in form.phone.errors %}\n' +
+                '            <h3>{{ error }}</h3>\n' +
+                '        {% endfor %}';
                 change_email.style.display = '';
                 change_phone.style.display = 'none';
             }
@@ -24,8 +28,11 @@
                 var contact_data = document.getElementById("contact");
                 var change_email = document.getElementById("change_on_email");
                 var change_phone = document.getElementById("change_on_phone");
-                contact_data.innerHTML = '<label>e-mail: </label>\n' +
-                '<input type="text" name="email" id="email" value="{{ email }}">';
+                contact_data.innerHTML = '{{ form.email.label }}\n' +
+                 '       {{ form.email(class="form-control") }}\n' +
+                '        {% for error in form.email.errors %}\n' +
+                '            <h3>{{ error }}</h3>\n' +
+                '        {% endfor %}';
                 change_email.style.display = 'none';
                 change_phone.style.display = '';
             }
@@ -33,16 +40,23 @@
         <span onclick="isPhone()" id="change_on_phone">Войти по номеру телефона</span>
         <span onclick="isEmail()" id="change_on_email" style="display: none">Войти по e-mail</span>
         <div class="row" id="contact">
-            <label>e-mail: </label>
-            <input type="text" name="email" id="email" value="{{ email }}">
+        {{ form.email.label }}
+        {{ form.email(class="form-control") }}
+        {% for error in form.email.errors %}
+            <h3>{{ error }}</h3>
+        {% endfor %}
         </div>
         <div class="row">
-            <label>Пароль: </label>
-            <input type="password" name="password" id="pass" minlength="6">
+        {{ form.password.label }}
+        {{ form.password(class="form-control") }}
+        {% for error in form.password.errors %}
+            <h3>{{ error }}</h3>
+        {% endfor %}
         </div>
-        <div class="error">{{ error }}</div>
         <p><input type="checkbox" name="remainme">Запомнить меня</p>
-        <input type="submit" value="Отправить">
+        <div class="row">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
     </form>
 </body>
 </html>
