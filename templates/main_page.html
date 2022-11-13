@@ -5,19 +5,19 @@
     <title>Title</title>
 </head>
 <body>
-<h1>SportZone</h1>
-{% if current_user.is_authenticated %}
-    <div class="hat">
-        <a href="{{ url_for('user_page') }}" class="hat_urls">Перейти на личную страницу</a>
-    </div>
-    <div class="hat hat_1">
-        <a href="{{ url_for('basket') }}" class="hat_urls">Корзина</a>
-    </div>
-    <div class="hat hat_2">
-        <a href="{{ url_for('favourites') }}" class="hat_urls">Избранное</a>
-    </div>
-    <hr><br>
-    <b class="hello">Добро пожаловать, {{ current_user.get_user()['name'] }}!</b><br><br>
+    <h1>SportZone</h1>
+    {% if current_user.is_authenticated %}
+        <div class="hat">
+            <a href="{{ url_for('user_page') }}" class="hat_urls">Перейти на личную страницу</a>
+        </div>
+        <div class="hat hat_1">
+            <a href="{{ url_for('basket') }}" class="hat_urls">Корзина</a>
+        </div>
+        <div class="hat hat_2">
+            <a href="{{ url_for('favourites') }}" class="hat_urls">Избранное</a>
+        </div>
+        <hr><br>
+        <b class="hello">Добро пожаловать, {{ current_user.get_user()['name'] }}!</b><br><br>
     {% else %}
         <div class="hat">
             <a href="{{ url_for('registration') }}" class="hat_urls">Регистрация</a>
@@ -30,10 +30,59 @@
         </div>
         <hr><br>
     {% endif %}
-<h3 onclick="location.href = '{{ url_for("registration") }}'">Регистрация</h3>
-<h3 onclick="location.href = '{{ url_for("authorization") }}'">Авторизация</h3>
-<h3 onclick="location.href = '{{ url_for("user_page") }}'">Личная страница</h3>
-<h3 onclick="location.href = '{{ url_for("basket") }}'">Корзина</h3>
-<h3 onclick="location.href = '{{ url_for("favourites") }}'">Избранное</h3>
+    <script>
+        function filterFunc(obj){
+            var form = document.getElementById("filter");
+            obj.value = 'True';
+        }
+    </script>
+    <form name="filter" method="GET" id="filter" action="/">
+        <div>
+            <a>Фильтры</a>
+            <div>
+                <input onclick="filterFunc(this)" type="checkbox" id="man" name="Мужское"
+                    {% if 'Мужское' in request.args %} checked {% endif %}>
+                <label for="man">Мужское</label>
+            </div>
+            <div>
+                <input onclick="filterFunc(this)" type="checkbox" id="woman" name="Женское"
+                    {% if 'Женское' in request.args %} checked {% endif %}>
+                <label for="woman">Женское</label>
+            </div>
+            <div>
+                <input onclick="filterFunc(this)" type="checkbox" id="clothes" name="Одежда"
+                    {% if 'Одежда' in request.args %} checked {% endif %}>
+                <label for="clothes">Одежда</label>
+            </div>
+            <div>
+                <input onclick="filterFunc(this)" type="checkbox" id="shoes" name="Обувь"
+                    {% if 'Обувь' in request.args %} checked {% endif %}>
+                <label for="shoes">Обувь</label>
+            </div>
+            <div>
+                <input onclick="filterFunc(this)" type="checkbox" id="inventory" name="Инвентарь"
+                    {% if 'Инвентарь' in request.args %} checked {% endif %}>
+                <label for="inventory">Инвентарь</label>
+            </div>
+            <input type="submit" value="Фильтровать">
+        </div>
+    </form>
+    <div class="products">
+    {% for product in products %}
+        <div class="product">
+            <p><img src="{{ product['picture'] }}" width="189" height="255" alt="lorem"></p>
+            <div>
+                <p>{{ product['price'] }} ₽</p>
+                <p>{{ product['name'] }}</p>
+                <p>Всего на складе: {{ product['quantity'] }}</p>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    <h3 onclick="location.href = '{{ url_for("registration") }}'">Регистрация</h3>
+    <h3 onclick="location.href = '{{ url_for("authorization") }}'">Авторизация</h3>
+    <h3 onclick="location.href = '{{ url_for("user_page") }}'">Личная страница</h3>
+    <h3 onclick="location.href = '{{ url_for("basket") }}'">Корзина</h3>
+    <h3 onclick="location.href = '{{ url_for("favourites") }}'">Избранное</h3>
 </body>
 </html>
