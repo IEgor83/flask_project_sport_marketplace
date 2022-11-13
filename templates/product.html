@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <title> Информация о товаре: {{ product.name }}</title>
+</head>
+<body>
+<p><a href="{{ url_for('main_page') }}">Вернуться на главную страницу</a></p>
+    {% if current_user.get_user()['role'] == 'admin' %}
+        <p><button type="submit">Удалить товар</button></p>
+        <p><button>Редактировать товар</button></p>
+    {% endif %}
+    <p><img src="{{ url_for('static', filename=product['picture']) }}" width="189" height="255" alt="lorem"></p>
+    <h1>{{ product['name'] }}</h1>
+    <p><small>Номер товара: {{ product['number'] }}</small></p>
+    <p>Цена: {{ product['price'] }} ₽</p>
+    <p>Категория:
+        {% for cat in product['category'] %}
+            {{ cat }},
+        {% endfor %}
+    </p>
+    <p>Всего на складе: {{ product['quantity'] }}</p>
+    <p><pre style="font-family: 'Times New Roman'">Описание: {{ product['description'] }}</pre></p>
+</body>
+</html>

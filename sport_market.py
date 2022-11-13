@@ -126,5 +126,11 @@ def user_page():
     return render_template("user_page.html")
 
 
+@app.route("/product/<int:number>")
+def product(number):
+    product_inf = db.select(f"SELECT * FROM products WHERE number = {number}")
+    return render_template("product.html", product=product_inf)
+
+
 if __name__ == "__main__":
     app.run(debug=True)

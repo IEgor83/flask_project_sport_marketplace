@@ -70,10 +70,14 @@
     <div class="products">
     {% for product in products %}
         <div class="product">
-            <p><img src="{{ product['picture'] }}" width="189" height="255" alt="lorem"></p>
+            <p><img src="{{ url_for('static', filename=product['picture']) }}"
+                onclick="location.href = '{{ url_for("product", number=product['number']) }}'"
+                width="189" height="255" alt="lorem"></p>
             <div>
                 <p>{{ product['price'] }} ₽</p>
-                <p>{{ product['name'] }}</p>
+                <p onclick="location.href = '{{ url_for("product", number=product['number']) }}'">
+                    {{ product['name'] }}
+                </p>
                 <p>Всего на складе: {{ product['quantity'] }}</p>
             </div>
         </div>
