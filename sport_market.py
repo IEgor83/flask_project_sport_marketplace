@@ -109,10 +109,21 @@ def basket():
     return render_template("basket.html")
 
 
-@app.route("/favourites")
+@app.route("/favourites", methods=['GET', 'POST'])
 @login_required
 def favourites():
-    return render_template("favourites.html")
+    products_favourite = db.select(f"SELECT * FROM favourites"
+        f" INNER JOIN products ON products.number = favourites.product"
+        f" WHERE favourites.user_id = {current_user.get_id()}")
+    if type(products_favourite) is dict:
+        print('1')
+        products_favourite = [products_favourite]
+        print(products_favourite)
+    if request.method == 'POST':
+        del_product = request.form.get('favourite')
+        db.insert(f"DELETE FROM favourites WHERE product = {del_product} AND user_id = {current_user.get_id()};")
+        return redirect(url_for('favourites'))
+    return render_template("favourites.html", favourites=products_favourite)
 
 
 @app.route("/orders")
@@ -177,15 +188,30 @@ def user_page():
 
 @app.route("/product/<int:number>", methods=['GET', 'POST'])
 def product(number):
+    if current_user.is_authenticated:
+        favourite = db.select(f"SELECT product FROM favourites"
+        f" WHERE user_id = {current_user.get_id()}")
+        if type(favourite) is dict:
+            favourite = [favourite]
+    else:
+        favourite = []
+    favourite_products = set()
+    for pr in favourite:
+        favourite_products.add(pr['product'])
     product_inf = db.select(f"SELECT * FROM products WHERE number = {number}")
     if request.method == 'POST':
         if request.form.get('basket'):
             db.insert(f"INSERT into basket (user_id, product, product_price)"
                 f"VALUES ({current_user.get_id()}, {product_inf['number']}, {product_inf['price']});")
+            return redirect(url_for('product', number=product_inf['number']))
         elif request.form.get('favourite'):
             db.insert(f"INSERT into favourites (user_id, product)"
                 f"VALUES ({current_user.get_id()}, {product_inf['number']});")
-    return render_template("product.html", product=product_inf)
+            return redirect(url_for('product', number=product_inf['number']))
+        elif request.form.get('favourite_del'):
+            db.insert(f"DELETE FROM favourites WHERE product = {product_inf['number']} AND user_id = {current_user.get_id()};")
+            return redirect(url_for('product', number=product_inf['number']))
+    return render_template("product.html", product=product_inf, favourite=favourite_products)
 
 
 if __name__ == "__main__":

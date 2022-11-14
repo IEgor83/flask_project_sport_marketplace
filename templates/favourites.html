@@ -6,5 +6,42 @@
 </head>
 <body>
 <h1>Избранное</h1>
+<div class="hat">
+        <div class="hat_0">
+            <a href="{{ url_for('main_page') }}" class="hat_urls">Перейти на главную страницу</a>
+        </div>
+        <div class="hat_1">
+            <a href="{{ url_for('user_page') }}" class="hat_urls">Перейти на личную страницу</a>
+        </div>
+        <div class="hat_2">
+            <a href="{{ url_for('basket') }}" class="hat_urls">Корзина</a>
+        </div>
+        <div class="hat_3">
+            <a href="{{ url_for('orders') }}" class="hat_urls">Мои заказы</a>
+        </div>
+        <div class="hat_4">
+            <a href="{{ url_for('logout') }}" class="hat_urls">Выйти</a>
+        </div>
+        <hr><br>
+    </div>
+<div class="products_favourites">
+    {% for product in favourites %}
+        <div class="product">
+            <p><img src="{{ url_for('static', filename=product['picture']) }}"
+                onclick="location.href = '{{ url_for("product", number=product['number']) }}'"
+                width="189" height="255" alt="lorem"></p>
+            <div>
+                <p>{{ product['price'] }} ₽</p>
+                <p onclick="location.href = '{{ url_for("product", number=product['number']) }}'">
+                    {{ product['name'] }}
+                </p>
+                <p>Всего на складе: {{ product['quantity'] }}</p>
+            </div>
+            <form name="favourite" method="post" id="{{ product['number'] }}">
+                <p><button type="submit" name="favourite" value="{{ product['number'] }}">убрать из избранного</button></p>
+            </form>
+        </div>
+    {% endfor %}
+    </div>
 </body>
 </html>

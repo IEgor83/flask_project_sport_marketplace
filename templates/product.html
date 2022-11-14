@@ -21,9 +21,15 @@
     </p>
     <p>Всего на складе: {{ product['quantity'] }}</p>
     <p><pre style="font-family: 'Times New Roman'">Описание: {{ product['description'] }}</pre></p>
+    {% if current_user.is_authenticated %}
     <form name="favourite" method="post" id="favourite">
-       <p><button type="submit" name="favourite" value="Yes">Добавить в избранное</button></p>
+        {% if product['number'] not in favourite %}
+            <p><button type="submit" name="favourite" value="Yes">Добавить в избранное</button></p>
+        {% else %}
+            <p><button type="submit" name="favourite_del" value="No">Убрать из избранного</button></p>
+        {% endif %}
     </form>
+    {% endif %}
     <form name="basket" method="post" id="basket">
        <p><button type="submit" name="basket" value="Yes">Добавить в корзину</button></p>
     </form>
