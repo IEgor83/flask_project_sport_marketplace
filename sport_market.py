@@ -126,9 +126,16 @@ def user_page():
     return render_template("user_page.html")
 
 
-@app.route("/product/<int:number>")
+@app.route("/product/<int:number>", methods=['GET', 'POST'])
 def product(number):
     product_inf = db.select(f"SELECT * FROM products WHERE number = {number}")
+    if request.method == 'POST':
+        if request.form.get('basket'):
+            db.insert(f"INSERT into basket (user_id, product, product_price)"
+                f"VALUES ({current_user.get_id()}, {product_inf['number']}, {product_inf['price']});")
+        elif request.form.get('favourite'):
+            db.insert(f"INSERT into favourites (user_id, product)"
+                f"VALUES ({current_user.get_id()}, {product_inf['number']});")
     return render_template("product.html", product=product_inf)
 
 
