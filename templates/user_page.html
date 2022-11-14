@@ -6,5 +6,98 @@
 </head>
 <body>
 <h1>Личная страница</h1>
+    <div class="hat">
+        <div class="hat_0">
+            <a href="{{ url_for('main_page') }}" class="hat_urls">Перейти на главную страницу</a>
+        </div>
+        <div class="hat_1">
+            <a href="{{ url_for('basket') }}" class="hat_urls">Корзина</a>
+        </div>
+        <div class="hat_2">
+            <a href="{{ url_for('favourites') }}" class="hat_urls">Избранное</a>
+        </div>
+        <div class="hat_3">
+            <a href="{{ url_for('orders') }}" class="hat_urls">Мои заказы</a>
+        </div>
+        <div class="hat_4">
+            <a href="{{ url_for('logout') }}" class="hat_urls">Выйти</a>
+        </div>
+        <hr><br>
+    </div>
+    <div>
+        <script>
+            function change(obj){
+                if (obj.innerHTML == 'изменить') {
+                    obj_id = obj.id;
+                    change_data_input = document.getElementsByName(obj.id);
+                    obj.innerHTML = 'отмена';
+                    change_data_input[0].style.display = '';
+                }
+                else {
+                    change_data_input = document.getElementsByName(obj.id);
+                    obj.innerHTML = 'изменить';
+                    change_data_input[0].style.display = 'none';
+                }
+            }
+            function submitChange(obj) {
+                document.getElementById(obj.className).submit();
+            }
+        </script>
+        <div>
+            <h2 class="hello">{{ current_user.get_user()['name'] }}</h2>
+            <p><small onclick="change(this)" id="change_name_form">{{ 'отменить' if param == 'change_name' else 'изменить' }}</small></p>
+            <form id="change_name" name="change_name_form" style="display: {{ '' if param == 'change_name' else none }}" method="post">
+                <input type="text" name="change_name">
+                {% if param == 'change_name' %}
+                    {% for cat, msg in get_flashed_messages(True) %}
+                    <div class="flash {{cat}}">{{msg}}</div>
+                    {% endfor %}
+                {% endif %}
+                <p><small class="change_name" onclick="submitChange(this)">изменить</small></p>
+            </form>
+        </div>
+        <div>
+            <h3 class="email">e-mail:</h3>
+            <h3 class="email_user">{{ current_user.get_user()['email'] }}</h3>
+            <p><small onclick="change(this)" id="change_email_form">{{ 'отменить' if param == 'change_email' else 'изменить' }}</small></p>
+            <form id="change_email" name="change_email_form" style="display: {{ '' if param == 'change_email' else none }}" method="post">
+                <input type="text" name="change_email">
+                {% if param == 'change_email' %}
+                    {% for cat, msg in get_flashed_messages(True) %}
+                    <div class="flash {{cat}}">{{msg}}</div>
+                    {% endfor %}
+                {% endif %}
+                <p><small class="change_email" onclick="submitChange(this)">изменить</small></p>
+            </form>
+        </div>
+        <div>
+            <h3 class="phone">Телефон:</h3>
+            <h3 class="phone_user">{{ current_user.get_user()['phone'] }}</h3>
+            <p><small onclick="change(this)" id="change_phone_form">{{ 'отменить' if param == 'change_phone' else 'изменить' }}</small></p>
+            <form id="change_phone" name="change_phone_form" style="display: {{ '' if param == 'change_phone' else none }}" method="post">
+                <input type="text" name="change_phone">
+                {% if param == 'change_phone' %}
+                    {% for cat, msg in get_flashed_messages(True) %}
+                    <div class="flash {{cat}}">{{msg}}</div>
+                    {% endfor %}
+                {% endif %}
+                <p><small class="change_phone" onclick="submitChange(this)">изменить</small></p>
+            </form>
+        </div>
+        <div>
+            <h3 class="birthday">Дата рождения:</h3>
+            <h3 class="birthday_user">{{ current_user.get_user()['birthday'] }}</h3>
+            <p><small onclick="change(this)" id="change_birthday_form">{{ 'отменить' if param == 'change_birthday' else 'изменить' }}</small></p>
+            <form id="change_birthday" name="change_birthday_form" style="display: {{ '' if param == 'change_birthday' else none }}" method="post">
+                <input type="date" name="change_birthday">
+                {% if param == 'change_birthday' %}
+                    {% for cat, msg in get_flashed_messages(True) %}
+                    <div class="flash {{cat}}">{{msg}}</div>
+                    {% endfor %}
+                {% endif %}
+                <p><small class="change_birthday" onclick="submitChange(this)">изменить</small></p>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

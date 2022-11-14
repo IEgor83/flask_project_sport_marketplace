@@ -142,3 +142,27 @@ class CheckAuthorizationEmail(CheckAuthorization):
 
 class CheckAuthorizationPhone(CheckAuthorization):
     email = None
+
+
+class ChangePhone(FlaskForm):
+    phone = StringField(label=('Телефон: '),
+        validators=[Required(message='Заполните это поле'),
+            Regexp(regex="^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$",
+                   message='Введите корректный номер телефона')])
+
+
+class ChangeEmail(FlaskForm):
+    email = StringField(label=('e-mail: '),
+        validators=[Required(message='Заполните это поле'),
+            Regexp(regex="^[-a-z0-9!#$%&'*+/=?^_`{|}~]+(?:\.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*@" \
+                         "(?:[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\.)*(?:aero|arpa|asia|biz|cat|" \
+                         "com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|[a-z][a-z])$",
+                   message='Введите корректный e-mail')])
+
+
+class ChangeName(FlaskForm):
+    name = StringField(label=('Имя пользователя: '),
+       validators=[Required(message='Заполните это поле'),
+           Length(min=1, message='Имя пользователя должно содержать минимум %(min)d символ'),
+           Regexp(regex="^[а-яА-ЯёЁa-zA-Z0-9]+$",
+                  message='Допускается латиница, кириллица и цифры')])

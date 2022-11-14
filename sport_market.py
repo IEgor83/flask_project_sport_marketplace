@@ -1,3 +1,4 @@
+import re
 from flask import Flask, render_template, url_for, request, redirect, flash
 from db_util import Database
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -120,10 +121,58 @@ def orders():
     return render_template("orders.html")
 
 
-@app.route("/user")
+@app.route("/user", methods=['GET', 'POST'])
 @login_required
 def user_page():
-    return render_template("user_page.html")
+    param = None
+    if request.method == 'POST':
+        if 'change_birthday' in request.form:
+            param = 'change_birthday'
+            new_birthday = request.form.get('change_birthday')
+            db.insert(f"UPDATE users SET birthday = '{new_birthday}' WHERE user_id = {current_user.get_id()};")
+            return redirect(url_for('user_page'))
+        elif 'change_phone' in request.form:
+            param = 'change_phone'
+            new_phone = request.form.get('change_phone')
+            if new_phone is not None:
+                tpl = "^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$"
+                if re.match(tpl, new_phone) is not None:
+                    db.insert(f"UPDATE users SET phone = '{new_phone}' WHERE user_id = {current_user.get_id()};")
+                    return redirect(url_for('user_page'))
+                else:
+                    flash('Введите корректный номер телефона', 'change_error')
+            else:
+                flash('Заполните поле', 'change_error')
+        elif 'change_email' in request.form:
+            param = 'change_email'
+            new_email = request.form.get('change_email')
+            if new_email is not None:
+                tpl = "^[-a-z0-9!#$%&'*+/=?^_`{|}~]+(?:\.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*@" \
+                      "(?:[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\.)*(?:aero|arpa|asia|biz|cat|" \
+                      "com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|[a-z][a-z])$"
+                if re.match(tpl, new_email) is not None:
+                    db.insert(f"UPDATE users SET email = '{new_email}' WHERE user_id = {current_user.get_id()};")
+                    return redirect(url_for('user_page'))
+                else:
+                    flash('Введите корректный e-mail', 'change_error')
+            else:
+                flash('Заполните поле', 'change_error')
+        elif 'change_name' in request.form:
+            param = 'change_name'
+            new_name = request.form.get('change_name')
+            if new_name is not None:
+                if len(new_name) > 0:
+                    tpl = "^[а-яА-ЯёЁa-zA-Z0-9]+$"
+                    if re.match(tpl, new_name) is not None:
+                        db.insert(f"UPDATE users SET name = '{new_name}' WHERE user_id = {current_user.get_id()};")
+                        return redirect(url_for('user_page'))
+                    else:
+                        flash('Допускается латиница, кириллица и цифры', 'change_error')
+                else:
+                    flash('Минимум 1 символ', 'change_error')
+            else:
+                flash('Заполните поле', 'change_error')
+    return render_template("user_page.html", param=param)
 
 
 @app.route("/product/<int:number>", methods=['GET', 'POST'])
