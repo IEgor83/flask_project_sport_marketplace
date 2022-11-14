@@ -37,8 +37,11 @@
                 </p>
                 <p>Всего на складе: {{ product['quantity'] }}</p>
             </div>
-            <form name="favourite" method="post" id="{{ product['number'] }}">
-                <p><button type="submit" name="favourite" value="{{ product['number'] }}">убрать из избранного</button></p>
+            <form name="favourite" method="post">
+                <p><button type="submit" name="favourite" value="{{ product['number'] }}">Убрать из избранного</button></p>
+            </form>
+            <form name="basket" method="post">
+                <p><button type="submit" name="basket" value="{{ product['number'] }}">Добавить в корзину</button></p>
             </form>
         </div>
     {% endfor %}

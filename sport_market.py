@@ -106,6 +106,7 @@ def logout():
 
 @app.route("/basket")
 def basket():
+
     return render_template("basket.html")
 
 
@@ -116,12 +117,16 @@ def favourites():
         f" INNER JOIN products ON products.number = favourites.product"
         f" WHERE favourites.user_id = {current_user.get_id()}")
     if type(products_favourite) is dict:
-        print('1')
         products_favourite = [products_favourite]
-        print(products_favourite)
     if request.method == 'POST':
-        del_product = request.form.get('favourite')
-        db.insert(f"DELETE FROM favourites WHERE product = {del_product} AND user_id = {current_user.get_id()};")
+        if request.form.get('favourite'):
+            del_product = request.form.get('favourite')
+            db.insert(f"DELETE FROM favourites WHERE product = {del_product} AND user_id = {current_user.get_id()};")
+        elif request.form.get('basket'):
+            add_to_basket = request.form.get('basket')
+            price = db.select(f"SELECT price FROM products where number = {add_to_basket};")
+            db.insert(f"INSERT into basket (user_id, product, product_price)"
+                      f"VALUES ({current_user.get_id()}, {add_to_basket}, {price['price']});")
         return redirect(url_for('favourites'))
     return render_template("favourites.html", favourites=products_favourite)
 
