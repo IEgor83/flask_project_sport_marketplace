@@ -14,7 +14,7 @@
             <a href="{{ url_for('user_page') }}" class="hat_urls">Перейти на личную страницу</a>
         </div>
         <div class="hat_2">
-            <a href="{{ url_for('basket') }}" class="hat_urls">Корзина</a>
+            <a href="{{ url_for('favourites') }}" class="hat_urls">Избранное</a>
         </div>
         <div class="hat_3">
             <a href="{{ url_for('orders') }}" class="hat_urls">Мои заказы</a>
@@ -24,5 +24,34 @@
         </div>
         <hr><br>
     </div>
+<div class="products_basket">
+    {% for product in basket %}
+        <div class="product">
+            <p><img src="{{ url_for('static', filename=product['picture']) }}"
+                onclick="location.href = '{{ url_for("product", number=product['number']) }}'"
+                width="189" height="255" alt="lorem"></p>
+            <div>
+                <p>{{ product['price'] }} ₽</p>
+                <p onclick="location.href = '{{ url_for("product", number=product['number']) }}'">
+                    {{ product['name'] }}
+                </p>
+                <p>Всего на складе: {{ product['quantity'] }}</p>
+                <form name="quantity_change_form" method="post">
+                    <label>Вы выбрали: {{ product['product_quantity'] }} штук(-и/-у)
+                            <input type="number" id="tentacles" name="tentacles" min="1" max="{{ product['quantity'] }}">
+                            <button type="submit" name="quantity_change" value="{{ product['number'] }}">изменить</button>
+                    </label>
+                </form>
+            </div>
+            <form name="basket" method="post">
+                <p><button type="submit" name="basket_del" value="{{ product['number'] }}">Убрать из корзины</button></p>
+            </form>
+        </div>
+    {% endfor %}
+    </div>
+<div>
+    <p>Общая сумма заказа: {{ price }} ₽</p>
+    <button type="submit" name="order" value="ON">Оформить заказ</button>
+</div>
 </body>
 </html>

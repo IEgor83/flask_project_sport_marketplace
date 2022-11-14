@@ -104,10 +104,27 @@ def logout():
     return redirect(url_for('authorization'))
 
 
-@app.route("/basket")
+@app.route("/basket", methods=['GET', 'POST'])
 def basket():
-
-    return render_template("basket.html")
+    price = 0
+    products_basket = db.select(f"SELECT * FROM basket"
+                                   f" INNER JOIN products ON products.number = basket.product"
+                                   f" WHERE basket.user_id = {current_user.get_id()}")
+    if type(products_basket) is dict:
+        products_basket = [products_basket]
+    for prod in products_basket:
+        price += prod['product_quantity'] * prod['price']
+    if request.method == 'POST':
+        if request.form.get('basket_del'):
+            product_for_del = request.form.get('basket_del')
+            db.insert(f"DELETE FROM basket WHERE product = {product_for_del} AND user_id = {current_user.get_id()};")
+        elif request.form.get('quantity_change'):
+            num = request.form.get('quantity_change')
+            quantity = request.form.get('tentacles')
+            db.insert(f"UPDATE basket SET product_quantity = '{quantity}'"
+                      f" where product = {num} AND user_id = {current_user.get_id()};")
+        return redirect(url_for('basket'))
+    return render_template("basket.html", basket=products_basket, price=price)
 
 
 @app.route("/favourites", methods=['GET', 'POST'])
@@ -124,9 +141,14 @@ def favourites():
             db.insert(f"DELETE FROM favourites WHERE product = {del_product} AND user_id = {current_user.get_id()};")
         elif request.form.get('basket'):
             add_to_basket = request.form.get('basket')
-            price = db.select(f"SELECT price FROM products where number = {add_to_basket};")
-            db.insert(f"INSERT into basket (user_id, product, product_price)"
-                      f"VALUES ({current_user.get_id()}, {add_to_basket}, {price['price']});")
+            pr_quantity = db.select(f"SELECT product_quantity FROM basket where product = {add_to_basket}"
+                                    f" and user_id = {current_user.get_id()};")
+            if pr_quantity:
+                db.insert(f"UPDATE basket SET product_quantity = '{pr_quantity['product_quantity'] + 1}'"
+                          f" WHERE user_id = {current_user.get_id()} and product = {add_to_basket};")
+            else:
+                db.insert(f"INSERT into basket (user_id, product, product_quantity)"
+                          f"VALUES ({current_user.get_id()}, {add_to_basket}, 1);")
         return redirect(url_for('favourites'))
     return render_template("favourites.html", favourites=products_favourite)
 
@@ -206,8 +228,14 @@ def product(number):
     product_inf = db.select(f"SELECT * FROM products WHERE number = {number}")
     if request.method == 'POST':
         if request.form.get('basket'):
-            db.insert(f"INSERT into basket (user_id, product, product_price)"
-                f"VALUES ({current_user.get_id()}, {product_inf['number']}, {product_inf['price']});")
+            pr_quantity = db.select(f"SELECT product_quantity FROM basket where product = {product_inf['number']}"
+                                    f" and user_id = {current_user.get_id()};")
+            if pr_quantity:
+                db.insert(f"UPDATE basket SET product_quantity = '{pr_quantity['product_quantity'] + 1}'"
+                          f" WHERE user_id = {current_user.get_id()} and product = {product_inf['number']};")
+            else:
+                db.insert(f"INSERT into basket (user_id, product, product_quantity)"
+                          f"VALUES ({current_user.get_id()}, {product_inf['number']}, 1);")
             return redirect(url_for('product', number=product_inf['number']))
         elif request.form.get('favourite'):
             db.insert(f"INSERT into favourites (user_id, product)"
