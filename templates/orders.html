@@ -6,5 +6,36 @@
 </head>
 <body>
 <h1>Заказы</h1>
+<div class="hat">
+        <div class="hat_0">
+            <a href="{{ url_for('main_page') }}" class="hat_urls">Перейти на главную страницу</a>
+        </div>
+        <div class="hat_1">
+            <a href="{{ url_for('user_page') }}" class="hat_urls">Перейти на личную страницу</a>
+        </div>
+        <div class="hat_2">
+            <a href="{{ url_for('favourites') }}" class="hat_urls">Избранное</a>
+        </div>
+        <div class="hat_3">
+            <a href="{{ url_for('basket') }}" class="hat_urls">Корзина</a>
+        </div>
+        <div class="hat_4">
+            <a href="{{ url_for('logout') }}" class="hat_urls">Выйти</a>
+        </div>
+        <hr><br>
+    </div>
+<div class="orders">
+    {% for order in orders %}
+        <div class="order">
+            <h3 onclick="location.href = '{{ url_for("order", number=order['number']) }}'">Номер заказа: {{ order['number'] }}</h3>
+            <div>
+                <p>Сумма заказа: {{ order['order_sum'] }} ₽</p>
+                <p>Заказ оформлен:{{ order['created_at'] }}</p>
+                <p>Статус: {{ order['status'] }}</p>
+                <p>Заказ придёт через {{ order['delivery_time'] }} дня с момента заказа</p>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
 </body>
 </html>

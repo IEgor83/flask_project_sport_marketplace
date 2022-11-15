@@ -1,4 +1,5 @@
 import re
+import datetime
 from flask import Flask, render_template, url_for, request, redirect, flash
 from db_util import Database
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -17,6 +18,7 @@ login_manager.login_message = 'Пожалуйста авторизуйтесь'
 login_manager.login_message_category = 'success'
 
 products = db.select(f"SELECT * FROM products")
+now = datetime.datetime.now()
 
 
 @login_manager.user_loader
@@ -123,6 +125,19 @@ def basket():
             quantity = request.form.get('tentacles')
             db.insert(f"UPDATE basket SET product_quantity = '{quantity}'"
                       f" where product = {num} AND user_id = {current_user.get_id()};")
+        elif request.form.get('order'):
+            if price != 0:
+                max_num = db.select(f"SELECT MAX(number) FROM orders")['max']
+                num = max_num + 1 if max_num else 1
+                db.insert(f"INSERT into orders (number, created_at, delivery_time, order_sum, status, user_id)"
+                          f" VALUES ({num}, '{now.strftime('%d-%m-%Y %H:%M')}', 3, {price}, 'wait', {current_user.get_id()});")
+                for pr in products_basket:
+                    db.insert(f"INSERT into orders_basket (user_id, product_number, order_number, product_quantity)"
+                              f" VALUES ({current_user.get_id()}, {pr['number']}, {num}, {pr['product_quantity']});")
+                db.insert("TRUNCATE basket;")
+                flash('Заказ успешно оформлен!')
+            else:
+                flash('Добавьте товары')
         return redirect(url_for('basket'))
     return render_template("basket.html", basket=products_basket, price=price)
 
@@ -156,7 +171,23 @@ def favourites():
 @app.route("/orders")
 @login_required
 def orders():
-    return render_template("orders.html")
+    orders_list = db.select(f"SELECT * FROM orders WHERE user_id = {current_user.get_id()}")
+    if type(orders_list) is dict:
+        orders_list = [orders_list]
+    print(orders_list)
+    return render_template("orders.html", orders=orders_list)
+
+
+@app.route("/order/<int:number>")
+@login_required
+def order(number):
+    order_one = db.select(f"SELECT * FROM orders INNER JOIN orders_basket "
+                          f"ON orders_basket.order_number = orders.number "
+                          f"INNER JOIN products ON products.number = orders_basket.product_number "
+                          f"WHERE orders.user_id = {current_user.get_id()} AND orders.number = {number}")
+    if type(order_one) is dict:
+        order_one = [order_one]
+    return render_template("order.html", order=order_one)
 
 
 @app.route("/user", methods=['GET', 'POST'])

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Заказ {{ order['number'] }}</title>
+</head>
+<body>
+    <h1>Заказ: {{ order[0]['order_number'] }}</h1>
+    {% for product in order %}
+        <div class="product">
+            <p><img src="{{ url_for('static', filename=product['picture']) }}"
+                onclick="location.href = '{{ url_for("product", number=product['number']) }}'"
+                width="189" height="255" alt="lorem"></p>
+            <div>
+                <p>{{ product['price'] }} ₽</p>
+                <p onclick="location.href = '{{ url_for("product", number=product['number']) }}'">
+                    {{ product['name'] }}
+                </p>
+                <p>Всего на складе осталось: {{ product['quantity'] }}</p>
+                    <label>Вы выбрали: {{ product['product_quantity'] }} штук(-и/-у)</label>
+            </div>
+        </div>
+    {% endfor %}
+    <br><hr>
+    <div>
+        <h1>Общая сумма заказа: {{ order[0]['order_sum'] }} ₽</h1>
+    </div>
+</body>
+</html>

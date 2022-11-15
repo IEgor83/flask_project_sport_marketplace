@@ -24,6 +24,9 @@
         </div>
         <hr><br>
     </div>
+{% for msg in get_flashed_messages() %}
+<div class="flash">{{msg}}</div>
+{% endfor %}
 <div class="products_basket">
     {% for product in basket %}
         <div class="product">
@@ -49,9 +52,11 @@
         </div>
     {% endfor %}
     </div>
-<div>
-    <p>Общая сумма заказа: {{ price }} ₽</p>
-    <button type="submit" name="order" value="ON">Оформить заказ</button>
-</div>
+<form name="order_confirm" method="post">
+    <div>
+        <p>Общая сумма заказа: {{ price }} ₽</p>
+        <button type="submit" name="order" value="ON">Оформить заказ</button>
+    </div>
+</form>
 </body>
 </html>
