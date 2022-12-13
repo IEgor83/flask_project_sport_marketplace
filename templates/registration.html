@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Registration</title>
 </head>
 <body>
 <h1>Регистрация</h1>
@@ -39,30 +39,30 @@
     <div class="row" id="contact">
         {{ form.email.label }}
         {{ form.email(class="form-control") }}
-        {% for error in form.email.errors %}
-            <h3>{{ error }}</h3>
-        {% endfor %}
+        {% if form.email.errors %}
+            <h3>{{ form.email.errors[0] }}</h3>
+        {% endif %}
     </div>
     <div class="row">
         {{ form.name.label }}
         {{ form.name(class="form-control") }}
-        {% for error in form.name.errors %}
-            <h3>{{ error }}</h3>
-        {% endfor %}
+        {% if form.name.errors %}
+            <h3>{{ form.name.errors[0] }}</h3>
+        {% endif %}
     </div>
     <div class="row">
         {{ form.password.label }}
         {{ form.password(class="form-control") }}
-        {% for error in form.password.errors %}
-            <h3>{{ error }}</h3>
-        {% endfor %}
+        {% if form.password.errors %}
+            <h3>{{ form.password.errors[0] }}</h3>
+        {% endif %}
     </div>
     <div class="row">
         {{ form.confirm_password.label }}
         {{ form.confirm_password(class="form-control") }}
-        {% for error in form.confirm_password.errors %}
-            <h3>{{ error }}</h3>
-        {% endfor %}
+        {% if form.confirm_password.errors %}
+            <h3>{{ form.confirm_password.errors[0] }}</h3>
+        {% endif %}
     </div>
     {{ error_mes }}
     <div class="row">

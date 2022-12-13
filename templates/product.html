@@ -2,13 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-     <title> Информация о товаре: {{ product.name }}</title>
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="static/css/main_page.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
+    </script>
 </head>
 <body>
+{% if (product is not none and not product['is_deleted']) or (current_user.is_authenticated and current_user.get_user()['role'] == 'admin') %}
+<div class="container-fluid">
+        <div style="margin: 20px;">
+            <h2>Информация о товаре: {{ product['number'] }}</h2>
+        </div>
+        <hr>
+    <div style="margin-left: 20px">
 <p><a href="{{ url_for('main_page') }}">Вернуться на главную страницу</a></p>
-    {% if current_user.get_user()['role'] == 'admin' %}
-        <p><button type="submit">Удалить товар</button></p>
-        <p><button>Редактировать товар</button></p>
+    {% if (current_user.is_authenticated and current_user.get_user()['role'] == 'admin') %}
+        <form method="post">
+            {% if product['is_deleted'] %}
+                <p><button type="submit" name="restore" value="true">Восстановить товар</button></p>
+            {% else %}
+                <p><button type="submit" name="delete" value="true">Удалить товар</button></p>
+            {% endif %}
+        </form>
+        <p><button onclick="location.href = '{{ url_for("product_redactor", number=product['number']) }}'">Редактировать товар</button></p>
     {% endif %}
     <p><img src="{{ url_for('static', filename=product['picture']) }}" width="189" height="255" alt="lorem"></p>
     <h1>{{ product['name'] }}</h1>
@@ -33,5 +52,10 @@
     <form name="basket" method="post" id="basket">
        <p><button type="submit" name="basket" value="Yes">Добавить в корзину</button></p>
     </form>
+{% else %}
+<h2>Товар удалён или не существует</h2>
+{% endif %}
+    </div>
+</div>
 </body>
 </html>

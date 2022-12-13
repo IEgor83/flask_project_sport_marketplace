@@ -2,29 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>UserPage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="static/css/main_page.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
+    </script>
 </head>
 <body>
-<h1>Личная страница</h1>
-    <div class="hat">
-        <div class="hat_0">
-            <a href="{{ url_for('main_page') }}" class="hat_urls">Перейти на главную страницу</a>
-        </div>
-        <div class="hat_1">
-            <a href="{{ url_for('basket') }}" class="hat_urls">Корзина</a>
-        </div>
-        <div class="hat_2">
-            <a href="{{ url_for('favourites') }}" class="hat_urls">Избранное</a>
-        </div>
-        <div class="hat_3">
-            <a href="{{ url_for('orders') }}" class="hat_urls">Мои заказы</a>
-        </div>
-        <div class="hat_4">
-            <a href="{{ url_for('logout') }}" class="hat_urls">Выйти</a>
-        </div>
-        <hr><br>
+<div class="container-fluid">
+    <div style="margin: 20px;">
+        <h1>Личная страница</h1>
     </div>
-    <div>
+    <hr>
+    <div class="row">
+        <div class="col-lg-2" style="margin-left: 20px">
+            <a href="{{ url_for('main_page') }}" class="font-weight-normal text-dark"
+               style="text-decoration: none;">Перейти на главную страницу</a>
+        </div>
+        <div class="col-lg-1">
+            <a href="{{ url_for('basket') }}" class="font-weight-normal text-dark"
+                style="text-decoration: none;">Корзина</a>
+        </div>
+        <div class="col-lg-1">
+            <a href="{{ url_for('favourites') }}" class="font-weight-normal text-dark"
+                style="text-decoration: none;">Избранное</a>
+        </div>
+        <div class="col-lg-1">
+            <a href="{{ url_for('orders') }}" class="font-weight-normal text-dark"
+                style="text-decoration: none;">Мои заказы</a>
+        </div>
+        <div class="col-lg-1">
+            <a href="{{ url_for('logout') }}" class="font-weight-normal text-dark"
+                style="text-decoration: none;">Выйти</a>
+        </div>
+    </div>
+    <hr>
+    <div style="margin-left: 20px">
         <script>
             function change(obj){
                 if (obj.innerHTML == 'изменить') {
@@ -57,8 +72,7 @@
             </form>
         </div>
         <div>
-            <h3 class="email">e-mail:</h3>
-            <h3 class="email_user">{{ current_user.get_user()['email'] }}</h3>
+            <h5 class="email">e-mail: {{ current_user.get_user()['email'] }}</h5>
             <p><small onclick="change(this)" id="change_email_form">{{ 'отменить' if param == 'change_email' else 'изменить' }}</small></p>
             <form id="change_email" name="change_email_form" style="display: {{ '' if param == 'change_email' else none }}" method="post">
                 <input type="text" name="change_email">
@@ -71,8 +85,7 @@
             </form>
         </div>
         <div>
-            <h3 class="phone">Телефон:</h3>
-            <h3 class="phone_user">{{ current_user.get_user()['phone'] }}</h3>
+            <h5 class="phone">Телефон: {{ current_user.get_user()['phone'] }}</h5>
             <p><small onclick="change(this)" id="change_phone_form">{{ 'отменить' if param == 'change_phone' else 'изменить' }}</small></p>
             <form id="change_phone" name="change_phone_form" style="display: {{ '' if param == 'change_phone' else none }}" method="post">
                 <input type="text" name="change_phone">
@@ -85,8 +98,7 @@
             </form>
         </div>
         <div>
-            <h3 class="birthday">Дата рождения:</h3>
-            <h3 class="birthday_user">{{ current_user.get_user()['birthday'] }}</h3>
+            <h5 class="birthday">Дата рождения: {{ current_user.get_user()['birthday'] }}</h5>
             <p><small onclick="change(this)" id="change_birthday_form">{{ 'отменить' if param == 'change_birthday' else 'изменить' }}</small></p>
             <form id="change_birthday" name="change_birthday_form" style="display: {{ '' if param == 'change_birthday' else none }}" method="post">
                 <input type="date" name="change_birthday">
@@ -98,6 +110,7 @@
                 <p><small class="change_birthday" onclick="submitChange(this)">изменить</small></p>
             </form>
         </div>
+    </div>
     </div>
 </body>
 </html>

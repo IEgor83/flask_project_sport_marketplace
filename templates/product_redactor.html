@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redactor</title>
+</head>
+<body>
+{% if product['number'] %}
+    <h2>Редактировать данные товара</h2>
+{% else %}
+    <h2>Добавить товар</h2>
+{% endif %}
+<form enctype="multipart/form-data" method="post">
+    <p><img src="{{ url_for('static', filename=product['picture']) }}" width="189" height="255" alt="lorem"></p>
+    <p>Фото товара</p>
+    <p><input type="file" name="file" accept="image/*,image/jpeg"></p>
+    <p>Имя товара: <input type="text" name="name" value="{{ product['name'] }}"></p>
+    <p>Номер товара: <input type="number" name="number" value="{{ product['number'] }}"></p>
+    <p>Цена: <input type="number" name="price" value="{{ product['price'] }}"> ₽</p>
+    <p>Категория: <input type="text" name="category" value="{{ product['category'] }}"></p>
+    <p>Всего на складе: <input type="text" name="quantity" value="{{ product['quantity'] }}"></p>
+    <p><pre style="font-family: 'Times New Roman'">Описание:
+    <textarea rows="10" cols="45" name="description">{{ product['description'] }}</textarea></pre></p>
+    <input type="submit" value="Сохранить изменения"></p>
+    </form>
+</body>
+</html>

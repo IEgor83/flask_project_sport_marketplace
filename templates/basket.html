@@ -2,61 +2,104 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>basket</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="static/css/main_page.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
+    </script>
 </head>
 <body>
-<h1>Корзина</h1>
-<div class="hat">
-        <div class="hat_0">
-            <a href="{{ url_for('main_page') }}" class="hat_urls">Перейти на главную страницу</a>
-        </div>
-        <div class="hat_1">
-            <a href="{{ url_for('user_page') }}" class="hat_urls">Перейти на личную страницу</a>
-        </div>
-        <div class="hat_2">
-            <a href="{{ url_for('favourites') }}" class="hat_urls">Избранное</a>
-        </div>
-        <div class="hat_3">
-            <a href="{{ url_for('orders') }}" class="hat_urls">Мои заказы</a>
-        </div>
-        <div class="hat_4">
-            <a href="{{ url_for('logout') }}" class="hat_urls">Выйти</a>
-        </div>
-        <hr><br>
+<div class="container-fluid">
+    <div style="margin: 20px;">
+        <h1>Корзина</h1>
     </div>
-{% for msg in get_flashed_messages() %}
-<div class="flash">{{msg}}</div>
-{% endfor %}
-<div class="products_basket">
-    {% for product in basket %}
-        <div class="product">
-            <p><img src="{{ url_for('static', filename=product['picture']) }}"
-                onclick="location.href = '{{ url_for("product", number=product['number']) }}'"
-                width="189" height="255" alt="lorem"></p>
-            <div>
-                <p>{{ product['price'] }} ₽</p>
-                <p onclick="location.href = '{{ url_for("product", number=product['number']) }}'">
-                    {{ product['name'] }}
-                </p>
-                <p>Всего на складе: {{ product['quantity'] }}</p>
-                <form name="quantity_change_form" method="post">
-                    <label>Вы выбрали: {{ product['product_quantity'] }} штук(-и/-у)
-                            <input type="number" id="tentacles" name="tentacles" min="1" max="{{ product['quantity'] }}">
-                            <button type="submit" name="quantity_change" value="{{ product['number'] }}">изменить</button>
-                    </label>
+    <hr>
+    {% if current_user.is_authenticated %}
+        <div class="row">
+        <div class="col-lg-2" style="margin-left: 20px">
+            <a href="{{ url_for('user_page') }}" class="font-weight-normal text-dark"
+               style="text-decoration: none;">Перейти на личную страницу</a>
+        </div>
+        <div class="col-lg-2">
+            <a href="{{ url_for('main_page') }}" class="font-weight-normal text-dark"
+                style="text-decoration: none;">Перейти на главную страницу</a>
+        </div>
+        <div class="col-lg-1">
+            <a href="{{ url_for('favourites') }}" class="font-weight-normal text-dark"
+                style="text-decoration: none;">Избранное</a>
+        </div>
+        <div class="col-lg-1">
+            <a href="{{ url_for('logout') }}" class="font-weight-normal text-dark"
+                style="text-decoration: none;">Выйти</a>
+        </div>
+        </div>
+        <hr>
+    {% else %}
+    <div class="row">
+        <div class="col-lg-1" style="margin-left: 20px">
+            <a href="{{ url_for('registration') }}" class="font-weight-normal text-dark"
+                style="text-decoration: none;">Регистрация</a>
+        </div>
+        <div class="col-lg-1">
+            <a href="{{ url_for('authorization') }}" class="font-weight-normal text-dark"
+                style="text-decoration: none;">Авторизация</a>
+        </div>
+        <div class="col-lg-3">
+            <a href="{{ url_for('main_page') }}" class="font-weight-normal text-dark"
+                style="text-decoration: none;">Вернуться на главную страницу</a>
+        </div>
+    </div>
+    <hr><br>
+    {% endif %}
+    {% for msg in get_flashed_messages() %}
+    <div class="flash">{{msg}}</div>
+    {% endfor %}
+    {% set flag = namespace(found=true) %}
+    <div class="products_basket">
+        {% for product in basket %}
+            <div class="product" style="display:inline-block; margin: 20px 20px 20px 20px;">
+                {% if product['is_deleted'] %}
+                    {% set flag.found = false %}
+                    <h2>Товар удалён</h2>
+                {% endif %}
+                <p><img src="{{ url_for('static', filename=product['picture']) }}"
+                    onclick="location.href = '{{ url_for("product", number=product['number']) }}'"
+                    width="189" height="255" alt="lorem"></p>
+                <div>
+                    <p>{{ product['price'] }} ₽</p>
+                    <p onclick="location.href = '{{ url_for("product", number=product['number']) }}'">
+                        {{ product['name']|truncate(length=16, killwords=False, end='...') }}
+                    </p>
+                    <p>Всего на складе: {{ product['quantity'] }}</p>
+                    {% if current_user.is_authenticated %}
+                    <form name="quantity_change_form" method="post">
+                        <label>Вы выбрали: {{ product['product_quantity'] }} штук(-и/-у)</label><br>
+                            <div style="margin: 10px 0 0 0">
+                                <input type="number" id="tentacles" name="tentacles" min="1" max="{{ product['quantity'] }}">
+                                <button type="submit" name="quantity_change" value="{{ product['number'] }}">изменить</button>
+                            </div>
+                    </form>
+                    <br>
+                    {% endif %}
+                </div>
+                <form name="basket" method="post">
+                    <p><button type="submit" name="basket_del" value="{{ product['number'] }}">Убрать из корзины</button></p>
                 </form>
             </div>
-            <form name="basket" method="post">
-                <p><button type="submit" name="basket_del" value="{{ product['number'] }}">Убрать из корзины</button></p>
-            </form>
+        {% endfor %}
         </div>
-    {% endfor %}
+        <form name="order_confirm" method="post">
+            <div>
+                <p>Общая сумма заказа: {{ price }} ₽</p>
+                {% if flag.found %}
+                    <button type="submit" name="order" value="ON">Оформить заказ</button>
+                {% else %}
+                    <h3>Пожалуйста уберите из корзины удалённые товры</h3>
+                {% endif %}
+            </div>
+        </form>
     </div>
-<form name="order_confirm" method="post">
-    <div>
-        <p>Общая сумма заказа: {{ price }} ₽</p>
-        <button type="submit" name="order" value="ON">Оформить заказ</button>
-    </div>
-</form>
 </body>
 </html>
