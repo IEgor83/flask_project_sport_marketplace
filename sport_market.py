@@ -81,7 +81,8 @@ def registration():
             user_id = max_id + 1
         else:
             user_id = 1
-        phone = re.sub("[-| |(|)|+]", "", phone)[:1]
+        if phone:
+            phone = re.sub("[-| |(|)|+]", "", phone)[:1]
         db.insert(f"INSERT into users (user_id, role, email, phone, name, password)"
                     f"VALUES ({user_id}, '{role}', '{email}', '{phone}', '{name}', '{hash_pass}')")
         if email:
@@ -237,9 +238,6 @@ def order(number):
                           f"WHERE orders.user_id = {current_user.get_id()} AND orders.number = {number}")
     if type(order_one) is dict:
         order_one = [order_one]
-    print(current_user.get_id())
-    print(number)
-    print(order_one)
     return render_template("order.html", order=order_one)
 
 
